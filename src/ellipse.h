@@ -10,11 +10,18 @@ using namespace std;
 
 class Ellipse : public Shape {
 public:
-Ellipse(double semiMajorAxes, double semiMinorAxes)
+Ellipse(string id, double semiMajorAxes, double semiMinorAxes) :
+        Shape (id), _semiMajorAxes (semiMajorAxes), _semiMinorAxes (semiMinorAxes)
 {
-        _semiMajorAxes = semiMajorAxes;
-        _semiMinorAxes = semiMinorAxes;
-        if ((semiMajorAxes < 1) || (semiMinorAxes < 1) || (semiMajorAxes < semiMinorAxes)) {
+        if ((_semiMajorAxes < 1) || (_semiMinorAxes < 1) || (_semiMajorAxes < _semiMinorAxes)) {
+                throw string ("This is not an ellipse!");
+        }
+}
+
+Ellipse(string id, double semiMajorAxes, double semiMinorAxes, string color) :
+        Shape (id, color), _semiMajorAxes (semiMajorAxes), _semiMinorAxes (semiMinorAxes)
+{
+        if ((_semiMajorAxes < 1) || (_semiMinorAxes < 1) || (_semiMajorAxes < _semiMinorAxes)) {
                 throw string ("This is not an ellipse!");
         }
 }

@@ -8,7 +8,23 @@ using namespace std;
 
 class Triangle : public Shape {
 public:
-Triangle(vector<TwoDimensionalCoordinate *> vectors)
+Triangle(string id, vector<TwoDimensionalCoordinate *> vectors) : Shape (id)
+{
+        if (vectors.size () != 3) {
+                throw string ("This is not a triangle!");
+        }
+
+        _vectors.assign (vectors.begin (), vectors.end ());
+        _a = sqrt (pow ((vectors.at (0)->getX () - vectors.at (1)->getX ()), 2) + pow ((vectors.at (0)->getY () - vectors.at (1)->getY ()), 2));
+        _b = sqrt (pow ((vectors.at (0)->getX () - vectors.at (2)->getX ()), 2) + pow ((vectors.at (0)->getY () - vectors.at (2)->getY ()), 2));
+        _c = sqrt (pow ((vectors.at (1)->getX () - vectors.at (2)->getX ()), 2) + pow ((vectors.at (1)->getY () - vectors.at (2)->getY ()), 2));
+
+        if ((_a + _b <= _c) || (_b + _c <= _a) || (_a + _c <= _b)) {
+                throw string ("This is not a triangle!");
+        }
+}
+
+Triangle(string id, vector<TwoDimensionalCoordinate *> vectors, string color) : Shape (id, color)
 {
         if (vectors.size () != 3) {
                 throw string ("This is not a triangle!");

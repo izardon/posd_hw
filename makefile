@@ -1,18 +1,18 @@
-.PHONY: dirs clean
+all: dirs ut_main
 
-SRC = src/rectangle.h src/ellipse.h src/triangle.h src/sort.h src/terminal.h
-TEST = test/ut_rectangle.h test/ut_ellipse.h test/ut_triangle.h test/ut_sort.h test/ut_terminal.h
-
-all: dirs main ut_main
-
-main : src/main.cpp $(SRC)
-	g++ -Wfatal-errors src/main.cpp -o bin/geo
+#declare variables
+CC = g++
+SRC = src/rectangle.h src/ellipse.h src/triangle.h src/compound_shape.h
+TEST = test/ut_rectangle.h test/ut_ellipse.h test/ut_triangle.h test/ut_compound_shape.h
 
 ut_main: test/ut_main.cpp $(TEST) $(SRC)
-	g++ -Wfatal-errors test/ut_main.cpp -o bin/ut_main -lgtest -lpthread
+	$(CC) -c src/shape.cpp -o obj/shape.o
+	$(CC) -Wfatal-errors test/ut_main.cpp -o bin/ut_main obj/shape.o -lgtest -lpthread
+
+.PHONY: dirs clean
 
 dirs:
 			mkdir -p bin
-
+			mkdir -p obj
 clean:
 			rm -f bin/*
