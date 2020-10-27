@@ -91,6 +91,12 @@ TEST (Rectangle, Info) {
         ASSERT_EQ ("Rectangle (4.500, 6.000)", rectangle.info ());
 }
 
+TEST (Rectangle, Type) {
+        Rectangle rectangle ("1", 4.5, 6);
+
+        ASSERT_EQ ("Rectangle", rectangle.type ());
+}
+
 TEST (Rectangle, GetId){
         Rectangle rectangle ("1", 4.5, 6);
 

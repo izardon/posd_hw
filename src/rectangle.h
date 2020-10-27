@@ -44,6 +44,11 @@ string info () const
         return(stream.str ());
 }
 
+string type () const
+{
+        return "Rectangle";
+}
+
 private:
 double _length, _width;
 };

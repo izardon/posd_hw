@@ -3,24 +3,34 @@
 
 #include <vector>
 #include "shape.h"
+// #include "null_iterator.h"
+#include "shape_iterator.h"
+#include "iterator.h"
+#include <list>
 
 using namespace std;
 
 class CompoundShape : public Shape {
 public:
-CompoundShape(string id, vector<Shape *> *shapes) : Shape (id, "transparent"), _shapes (shapes)
+CompoundShape(string id, std::list<Shape*> shapes) : Shape (id, "transparent"), _shapes (shapes)
 {
-        if (shapes->size () == 0) {
+        if (shapes.size () == 0) {
                 throw string ("This is not a compound shape!");
         }
 }
 
+Iterator* createIterator () const
+{
+        return new ShapeIterator<std::list<Shape *>::const_iterator> (_shapes.begin (), _shapes.end ());
+}
+
+
 double area () const
 {
         double sum = 0;
-        vector<Shape *>::iterator ptr;
+        std::list<Shape *>::const_iterator ptr;
 
-        for (ptr = _shapes->begin (); ptr < _shapes->end (); ptr++) {
+        for (ptr = _shapes.begin (); ptr != _shapes.end (); ptr++) {
                 sum += (*ptr)->area ();
         }
         return sum;
@@ -29,9 +39,9 @@ double area () const
 double perimeter () const
 {
         double sum = 0;
-        vector<Shape *>::iterator ptr;
+        std::list<Shape *>::const_iterator ptr;
 
-        for (ptr = _shapes->begin (); ptr < _shapes->end (); ptr++) {
+        for (ptr = _shapes.begin (); ptr != _shapes.end (); ptr++) {
                 sum += (*ptr)->perimeter ();
         }
         return sum;
@@ -40,59 +50,54 @@ double perimeter () const
 string info () const
 {
         ostringstream stream;
-        vector<Shape *>::iterator ptr;
+        std::list<Shape *>::const_iterator ptr;
 
         stream << "Compound Shape {";
 
-        for (ptr = _shapes->begin (); ptr < _shapes->end (); ptr++) {
+        for (ptr = _shapes.begin (); ptr != _shapes.end (); ptr++) {
                 stream << (*ptr)->info ();
 
-                if (ptr != (_shapes->end () - 1)) {
+                if (std::distance (ptr, _shapes.end ()) > 1) {
                         stream << ", ";
                 }
         }
 
         stream << "}";
 
-        return(stream.str ());
+        return stream.str ();
 }
 
 void addShape (Shape* shape)
 {
-        _shapes->push_back (shape);
+        _shapes.push_back (shape);
 }
 
 void deleteShapeById (string id)
 {
-        try {
-                getShapeById (id);
-        } catch (string e) {
-                throw string ("Expected delete shape but shape not found");
-        }
-
         double oriPerimeter = perimeter ();
-        vector<Shape *>::iterator ptr;
+        list<Shape *>::iterator ptr;
 
-        for (ptr = _shapes->begin (); ptr < _shapes->end (); ptr++) {
+        for (ptr = _shapes.begin (); ptr != _shapes.end (); ptr++) {
                 if (id.compare ((*ptr)->id ()) == 0) {
-                        _shapes->erase (ptr);
-                        break;
+                        _shapes.erase (ptr);
+                        return;
                 }
                 try {
                         (*ptr)->deleteShapeById (id);
                         if (oriPerimeter != perimeter ()) {
-                                break;
+                                return;
                         }
                 } catch (string e) {
                 }
         }
+        throw string ("Expected delete shape but shape not found");
 }
 
-Shape * getShapeById (string id)
+Shape * getShapeById (string id) const
 {
-        vector<Shape *>::iterator ptr;
+        list<Shape *>::const_iterator ptr;
 
-        for (ptr = _shapes->begin (); ptr < _shapes->end (); ptr++) {
+        for (ptr = _shapes.begin (); ptr != _shapes.end (); ptr++) {
                 if (id.compare ((*ptr)->id ()) == 0) {
                         return *ptr;
                 }
@@ -104,8 +109,13 @@ Shape * getShapeById (string id)
         throw string ("Expected get shape but shape not found");
 }
 
+string type () const
+{
+        return "Compound Shape";
+}
+
 private:
-vector<Shape *> *_shapes;
+std::list<Shape *> _shapes;
 };
 
 #endif

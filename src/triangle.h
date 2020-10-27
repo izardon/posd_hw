@@ -68,6 +68,11 @@ string info () const
         return(stream.str ());
 }
 
+string type () const
+{
+        return "Triangle";
+}
+
 private:
 double _a, _b, _c;
 vector<TwoDimensionalCoordinate *> _vectors;

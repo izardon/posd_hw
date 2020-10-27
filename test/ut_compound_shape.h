@@ -1,5 +1,6 @@
 #include "../src/shape.h"
 #include "../src/compound_shape.h"
+#include <list>
 
 class CompoundShapeTest : public ::testing::Test {
 protected:
@@ -14,10 +15,6 @@ void SetUp () override
         triangle1i3a4b5c = new Triangle ("t1", triangleVector3a4b5c);
 
         ellipse1i3maj2mio = new Ellipse ("e1", 3, 2);
-
-        shapes01 = new vector<Shape *>();
-        shapes02 = new vector<Shape *>();
-        shapes03 = new vector<Shape *>();
 }
 
 void TearDown () override
@@ -26,9 +23,6 @@ void TearDown () override
         delete rectangle2i2l2h;
         delete triangle1i3a4b5c;
         delete ellipse1i3maj2mio;
-        delete shapes03;
-        delete shapes02;
-        delete shapes01;
 }
 
 Shape * rectangle1i3l4h;
@@ -37,14 +31,14 @@ vector<TwoDimensionalCoordinate*> triangleVector3a4b5c;
 Shape * triangle1i3a4b5c;
 Shape * ellipse1i3maj2mio;
 
-vector<Shape *> * shapes01;
-vector<Shape *> * shapes02;
-vector<Shape *> * shapes03;
+list<Shape *> shapes01;
+list<Shape *> shapes02;
+list<Shape *> shapes03;
 };
 
 TEST_F (CompoundShapeTest, ConstructorNoException){
-        shapes01->push_back (rectangle1i3l4h);
-        shapes01->push_back (rectangle2i2l2h);
+        shapes01.push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle2i2l2h);
         ASSERT_NO_THROW (CompoundShape ("c1", shapes01));
 }
 
@@ -58,53 +52,61 @@ TEST_F (CompoundShapeTest, ExceptionForNoShape){
 }
 
 TEST_F (CompoundShapeTest, GetId){
-        shapes01->push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle1i3l4h);
         CompoundShape compoundShape ("c1", shapes01);
 
         ASSERT_EQ ("c1", compoundShape.id ());
 }
 
 TEST_F (CompoundShapeTest, GetDefaultColor){
-        shapes01->push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle1i3l4h);
         CompoundShape compoundShape ("c1", shapes01);
 
         ASSERT_EQ ("transparent", compoundShape.color ());
 }
 
 TEST_F (CompoundShapeTest, Area){
-        shapes01->push_back (rectangle1i3l4h);
-        shapes01->push_back (rectangle2i2l2h);
+        shapes01.push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle2i2l2h);
         CompoundShape compoundShape ("c1", shapes01);
 
         ASSERT_EQ (16, compoundShape.area ());
 }
 
 TEST_F (CompoundShapeTest, Perimeter){
-        shapes01->push_back (rectangle1i3l4h);
-        shapes01->push_back (rectangle2i2l2h);
+        shapes01.push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle2i2l2h);
         CompoundShape compoundShape ("c1", shapes01);
 
         ASSERT_EQ (22, compoundShape.perimeter ());
 }
 
 TEST_F (CompoundShapeTest, Info){
-        shapes01->push_back (rectangle1i3l4h);
-        shapes01->push_back (rectangle2i2l2h);
+        shapes01.push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle2i2l2h);
         CompoundShape compoundShape ("c1", shapes01);
 
         ASSERT_EQ ("Compound Shape {Rectangle (3.000, 4.000), Rectangle (2.000, 2.000)}", compoundShape.info ());
 }
 
+TEST_F (CompoundShapeTest, Type){
+        shapes01.push_back (rectangle1i3l4h);
+        shapes01.push_back (rectangle2i2l2h);
+        CompoundShape compoundShape ("c1", shapes01);
+
+        ASSERT_EQ ("Compound Shape", compoundShape.type ());
+}
+
 TEST_F (CompoundShapeTest, AddShape){
-        shapes02->push_back (triangle1i3a4b5c);//12
+        shapes02.push_back (triangle1i3a4b5c);//12
         CompoundShape * compoundShape02 = new CompoundShape ("c2", shapes02);
 
-        shapes01->push_back (compoundShape02);
-        shapes01->push_back (rectangle1i3l4h);//14
-        shapes01->push_back (rectangle2i2l2h);//8
+        shapes01.push_back (compoundShape02);
+        shapes01.push_back (rectangle1i3l4h);//14
+        shapes01.push_back (rectangle2i2l2h);//8
         CompoundShape * compoundShape01 = new CompoundShape ("c1", shapes01);
 
-        shapes03->push_back (ellipse1i3maj2mio);//16.566
+        shapes03.push_back (ellipse1i3maj2mio);//16.566
         CompoundShape * compoundShape03 = new CompoundShape ("c3", shapes03);
 
         compoundShape02->addShape (compoundShape03);
@@ -117,13 +119,13 @@ TEST_F (CompoundShapeTest, AddShape){
 }
 
 TEST_F (CompoundShapeTest, ExceptionForGetShapeByIdNotFound){
-        shapes01->push_back (rectangle1i3l4h);//14
+        shapes01.push_back (rectangle1i3l4h);//14
         CompoundShape * compoundShape01 = new CompoundShape ("c1", shapes01);
 
-        shapes02->push_back (triangle1i3a4b5c);//12
+        shapes02.push_back (triangle1i3a4b5c);//12
         CompoundShape * compoundShape02 = new CompoundShape ("c2", shapes02);
 
-        shapes03->push_back (ellipse1i3maj2mio);//16.566
+        shapes03.push_back (ellipse1i3maj2mio);//16.566
         CompoundShape * compoundShape03 = new CompoundShape ("c3", shapes03);
 
         compoundShape02->addShape (compoundShape03);
@@ -143,13 +145,13 @@ TEST_F (CompoundShapeTest, ExceptionForGetShapeByIdNotFound){
 }
 
 TEST_F (CompoundShapeTest, GetShapeById){
-        shapes01->push_back (rectangle1i3l4h);//14
+        shapes01.push_back (rectangle1i3l4h);//14
         CompoundShape * compoundShape01 = new CompoundShape ("c1", shapes01);
 
-        shapes02->push_back (triangle1i3a4b5c);//12
+        shapes02.push_back (triangle1i3a4b5c);//12
         CompoundShape * compoundShape02 = new CompoundShape ("c2", shapes02);
 
-        shapes03->push_back (ellipse1i3maj2mio);//16.566
+        shapes03.push_back (ellipse1i3maj2mio);//16.566
         CompoundShape * compoundShape03 = new CompoundShape ("c3", shapes03);
 
         compoundShape02->addShape (compoundShape03);
@@ -169,13 +171,13 @@ TEST_F (CompoundShapeTest, GetShapeById){
 }
 
 TEST_F (CompoundShapeTest, ExceptionForDeleteIdNotFound){
-        shapes01->push_back (rectangle1i3l4h);//14
+        shapes01.push_back (rectangle1i3l4h);//14
         CompoundShape * compoundShape01 = new CompoundShape ("c1", shapes01);
 
-        shapes02->push_back (triangle1i3a4b5c);//12
+        shapes02.push_back (triangle1i3a4b5c);//12
         CompoundShape * compoundShape02 = new CompoundShape ("c2", shapes02);
 
-        shapes03->push_back (ellipse1i3maj2mio);//16.566
+        shapes03.push_back (ellipse1i3maj2mio);//16.566
         CompoundShape * compoundShape03 = new CompoundShape ("c3", shapes03);
 
         compoundShape02->addShape (compoundShape03);
@@ -195,13 +197,13 @@ TEST_F (CompoundShapeTest, ExceptionForDeleteIdNotFound){
 }
 
 TEST_F (CompoundShapeTest, DeleteShapeById){
-        shapes01->push_back (rectangle1i3l4h);//14
+        shapes01.push_back (rectangle1i3l4h);//14
         CompoundShape * compoundShape01 = new CompoundShape ("c1", shapes01);
 
-        shapes02->push_back (triangle1i3a4b5c);//12
+        shapes02.push_back (triangle1i3a4b5c);//12
         CompoundShape * compoundShape02 = new CompoundShape ("c2", shapes02);
 
-        shapes03->push_back (ellipse1i3maj2mio);//16.566
+        shapes03.push_back (ellipse1i3maj2mio);//16.566
         CompoundShape * compoundShape03 = new CompoundShape ("c3", shapes03);
 
         compoundShape02->addShape (compoundShape03);

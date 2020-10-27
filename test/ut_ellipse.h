@@ -99,6 +99,12 @@ TEST (Ellipse, Info) {
         ASSERT_EQ ("Ellipse (6.000, 5.000)", ellipse.info ());
 }
 
+TEST (Ellipse, Type) {
+        Ellipse ellipse ("1", 6, 5);
+
+        ASSERT_EQ ("Ellipse", ellipse.type ());
+}
+
 TEST (Ellipse, GetId){
         Ellipse ellipse ("1", 6, 5);
 

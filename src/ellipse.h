@@ -48,6 +48,10 @@ string info () const
         return(stream.str ());
 }
 
+string type () const
+{
+        return "Ellipse";
+}
 
 private:
 double _semiMajorAxes, _semiMinorAxes;
